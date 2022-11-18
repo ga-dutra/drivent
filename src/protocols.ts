@@ -4,12 +4,23 @@ export type ApplicationError = {
 };
 
 export type ViaCEPAddress = {
-  logradouro: string;
-  complemento: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  localidade: string,
+  uf: string,
+
 };
+
+export type AddressEnrollment = {
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  cidade: string,
+  uf: string,
+  error?: string
+
+}
 
 export type RequestError = {
   status: number;
