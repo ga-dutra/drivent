@@ -17,6 +17,8 @@
         "transform": "typescript-transform-paths"
       }
     ]
+  },"ts-node": {
+    "esm": true
   },
   "include": ["src", "tests"]
 }
