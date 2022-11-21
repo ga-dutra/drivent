@@ -2,10 +2,8 @@ import { Payment } from "@/protocols";
 import paymentRepository from "@/repositories/payments-repository";
 import { Ticket } from "@prisma/client";
 
-let ticket: Ticket;
-
 async function getTicketById(ticketId: number) {
-  ticket = await paymentRepository.findTicketById(ticketId);
+  const ticket = await paymentRepository.findTicketById(ticketId);
   return ticket;
 }
 
@@ -15,7 +13,9 @@ async function getPaymentById(ticketId: number) {
 }
 
 async function postPayment(payment: Payment) {
+  const ticket: Ticket = await paymentRepository.findTicketById(payment.ticketId);
   const newPayment = await paymentRepository.createPayment(payment, ticket.ticketTypeId);
+  
   await paymentRepository.updateTicketPayment(Number(payment.ticketId));
 
   return {
