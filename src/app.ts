@@ -2,12 +2,11 @@ import "reflect-metadata";
 import "express-async-errors";
 import express, { Express } from "express";
 import cors from "cors";
-
+import { handleApplicationErrors } from "@/middlewares";
 import { loadEnv, connectDb, disconnectDB } from "@/config";
 
 loadEnv();
 
-import { handleApplicationErrors } from "@/middlewares";
 import {
   usersRouter,
   authenticationRouter,
@@ -17,6 +16,8 @@ import {
   paymentsRouter,
   hotelsRouter,
 } from "@/routers";
+
+import { usersRouter, authenticationRouter, eventsRouter, enrollmentsRouter, ticketsRouter, paymentsRouter } from "@/routers";
 
 const app = express();
 
