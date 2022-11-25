@@ -19,10 +19,19 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
 export async function getRoomsByHotelId(req: AuthenticatedRequest, res: Response) {
   const hotelId = Number(req.query.hotelId);
 
-  if(!hotelId) {
+  if(!hotelId || isNaN(hotelId)) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 
-  const hotel = await hotelService.getRoomsByHotelId(hotelId);
-  return res.status(httpStatus.OK).send(hotel);
+  try {
+    const hotel = await hotelService.getHotelById(hotelId);
+    if (!hotel) {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+
+    const rooms = await hotelService.getRoomsByHotelId(hotelId);
+    return res.status(httpStatus.OK).send(rooms);
+  } catch (error) {
+    return res.sendStatus(httpStatus.NOT_FOUND);
+  }
 }
