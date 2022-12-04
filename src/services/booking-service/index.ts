@@ -6,6 +6,7 @@ import { TicketStatus } from "@prisma/client";
 import { exclude } from "@/utils/prisma-utils";
 import { roomIsFullError } from "@/errors/room-is-full-error";
 import { invalidTicketError } from "@/errors/invalid-ticket-error";
+import { Console } from "console";
 
 async function getBookingByUserId(userId: number)  {
   const booking = await bookingRepository.findBookingByUserId(userId);
@@ -26,9 +27,7 @@ async function validateBooking(userId: number) {
   if (!validTicket || validTicket.status !== TicketStatus.PAID) {
     return "invalidTicket";
   }
-  const ticketType = (await ticketRepository.findTickeWithTypeById(validTicket.ticketTypeId)).TicketType;
-
-  if (ticketType.includesHotel === false || ticketType.isRemote === true) {
+  if (validTicket.TicketType.includesHotel === false || validTicket.TicketType.isRemote === true) {
     return "invalidTicket";
   }
   return true;
