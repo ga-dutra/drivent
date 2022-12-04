@@ -32,5 +32,30 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
     else if(error.name === "RoomIsFullError" || error.name === "InvalidTicketError") {
       return res.sendStatus(httpStatus.FORBIDDEN);
     }
+    return res.sendStatus(httpStatus.NOT_FOUND);
+  }
+}
+
+export async function putBooking(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { bookingId } = req.params;
+  const { roomId } = req.body;
+  
+  if (!bookingId || !roomId || Number(bookingId) < 1 
+      || Number(roomId) < 1 || isNaN(Number(roomId)) || isNaN(Number(bookingId))) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+
+  try {
+    const updatedBooking = await bookingService.updateBooking(Number(bookingId), Number(roomId), Number(userId));
+    return res.status(httpStatus.OK).send(updatedBooking);
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    else if(error.name === "RoomIsFullError" || error.name === "InvalidTicketError") {
+      return res.sendStatus(httpStatus.FORBIDDEN);
+    }
+    return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }

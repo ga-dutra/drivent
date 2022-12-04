@@ -43,7 +43,7 @@ async function validateRoom(roomId: number) {
   return true;
 }
 
-async function postBooking(userId: number, roomId: number) {
+async function postBooking(userId: number, roomId: number): Promise<BookingId> {
   const bookingValidation = await validateBooking(userId);
   
   if (bookingValidation === "enrollmentNotFound") {
@@ -72,9 +72,42 @@ async function postBooking(userId: number, roomId: number) {
   return bookingRepository.insertBooking(userId, roomId);
 }
 
+async function updateBooking(bookingId: number, roomId: number, userId: number): Promise<BookingId> {
+  const bookingValidation = await validateBooking(userId);
+  
+  if (bookingValidation === "enrollmentNotFound") {
+    throw notFoundError();
+  }
+  else if (bookingValidation === "invalidTicket") {
+    throw invalidTicketError();
+  }
+  
+  const checkRoom = await validateRoom(roomId);
+
+  if (checkRoom === "notFound") {
+    throw notFoundError();
+  }
+
+  else if (checkRoom === "fullRoom") {
+    throw roomIsFullError();
+  }
+
+  const userBooking = await bookingRepository.findBookingById(bookingId);
+  
+  if (!userBooking || userBooking.userId !== userId) {
+    throw notFoundError();
+  }
+  return bookingRepository.putBooking(bookingId, roomId);
+}
+
+export type BookingId = {
+  id: number
+};
+
 const bookingService = {
   getBookingByUserId,
   postBooking,
+  updateBooking,
 };
 
 export default bookingService;
