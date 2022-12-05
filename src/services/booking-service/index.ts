@@ -6,7 +6,6 @@ import { TicketStatus } from "@prisma/client";
 import { exclude } from "@/utils/prisma-utils";
 import { roomIsFullError } from "@/errors/room-is-full-error";
 import { invalidTicketError } from "@/errors/invalid-ticket-error";
-import { Console } from "console";
 
 async function getBookingByUserId(userId: number)  {
   const booking = await bookingRepository.findBookingByUserId(userId);
@@ -59,12 +58,6 @@ async function postBooking(userId: number, roomId: number): Promise<BookingId> {
   }
 
   else if (checkRoom === "fullRoom") {
-    throw roomIsFullError();
-  }
-
-  const userHasBooking = await bookingRepository.findBookingByUserId(userId);
-  
-  if(userHasBooking) {
     throw roomIsFullError();
   }
 
